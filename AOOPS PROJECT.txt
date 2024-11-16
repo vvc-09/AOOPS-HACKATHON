@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste Management System</title>
+</head>
+<body>
+    <h1>Waste Management System</h1>
+    <form action="submit.jsp" method="post">
+        <label for="wasteType">Waste Type:</label>
+        <select id="wasteType" name="wasteType" required>
+            <option value="Organic">Organic</option>
+            <option value="Plastic">Plastic</option>
+            <option value="Metal">Metal</option>
+            <option value="Paper">Paper</option>
+        </select>
+        <br><br>
+
+        <label for="quantity">Quantity (kg):</label>
+        <input type="number" id="quantity" name="quantity" required>
+        <br><br>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required>
+        <br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submission Confirmation</title>
+</head>
+<body>
+    <h1>Waste Submission Confirmation</h1>
+    <%
+        String wasteType = request.getParameter("wasteType");
+        String quantity = request.getParameter("quantity");
+        String location = request.getParameter("location");
+
+        // Display submission details
+        out.println("<p>Waste Type: " + wasteType + "</p>");
+        out.println("<p>Quantity: " + quantity + " kg</p>");
+        out.println("<p>Location: " + location + "</p>");
+    %>
+    <p>Thank you for your submission!</p>
+    <a href="view.jsp">View All Submissions</a>
+    <br><br>
+    <a href="index.html">Back to Home</a>
+</body>
+</html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.ArrayList" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Waste Submissions</title>
+</head>
+<body>
+    <h1>All Waste Submissions</h1>
+    <%
+        // Retrieve or initialize submission list in session
+        ArrayList<String> submissions = (ArrayList<String>) session.getAttribute("submissions");
+        if (submissions == null) {
+            submissions = new ArrayList<String>();
+            session.setAttribute("submissions", submissions);
+        }
+
+        // Append the latest submission from 'submit.jsp'
+        String wasteDetails = "Type: " + request.getParameter("wasteType") + 
+                              ", Quantity: " + request.getParameter("quantity") + " kg" + 
+                              ", Location: " + request.getParameter("location");
+        submissions.add(wasteDetails);
+
+        // Display submissions
+        for (String submission : submissions) {
+            out.println("<p>" + submission + "</p>");
+        }
+    %>
+    <br><br>
+    <a href="index.html">Add More Waste</a>
+</body>
+</html>
